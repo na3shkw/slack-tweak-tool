@@ -45,7 +45,7 @@
         .ReactModal__Content--after-open[aria-label="検索"]{
             margin-left: calc(var(--sidebar-width) / 2);
         }
-        .p-workspace {
+        .p-workspace-layout {
             margin-top: -38px;
         }
     `;
