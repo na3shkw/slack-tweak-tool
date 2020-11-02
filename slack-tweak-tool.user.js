@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Slack Tweak Tool
 // @namespace    https://github.com/na3shkw
-// @version      0.1
+// @version      0.2
 // @description  Slackをカスタマイズするユーザースクリプト
 // @author       na3shkw
 // @match        https://app.slack.com/*
@@ -24,7 +24,7 @@
             width: calc(100% - var(--sidebar-width));
             height: var(--sidebar-header-height);
             margin-left: var(--sidebar-width);
-            transition: transform .2s ease 0s;				
+            transition: transform .2s ease 0s;
         }
         .p-top_nav.expand {
             transform: translateY(0);
@@ -56,13 +56,22 @@
     function elem(selector){
         return document.querySelectorAll(selector);
     }
-    
+
+    function updateSidebarWidth(){
+        elem(":root")[0].style.setProperty(
+          "--sidebar-width",
+          elem(".p-workspace__sidebar")[0].style.width
+        );
+        window.removeEventListener("mouseup", updateSidebarWidth);
+    }
+
     function main(){
         const style = document.createElement('style');
         style.innerHTML = css;
         elem("head")[0].appendChild(style);
 
         // ナビゲーションのドロワー追加
+        updateSidebarWidth();
         const topNav = elem(".p-top_nav")[0];
         topNav.insertAdjacentHTML('beforeend', html.topNavDrawer);
         topNav.addEventListener("mouseenter", function(){
@@ -70,6 +79,11 @@
         });
         topNav.addEventListener("mouseleave", function(){
             this.classList.remove("expand");
+        });
+
+        // サイドバーリサイズのイベントリスナ登録
+        elem(".p-resizer")[0].addEventListener("mousedown", function(){
+            window.addEventListener("mouseup", updateSidebarWidth);
         });
     }
 
